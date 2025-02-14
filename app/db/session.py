@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine("postgresql://postgres:postgres@localhost:5439/dsh_db_online")
+engine = create_engine("postgresql://postgres:postgres@localhost:5441/dsh_db_users")
 _session = sessionmaker(bind=engine, expire_on_commit=False, class_=Session)
 
 

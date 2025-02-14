@@ -4,7 +4,7 @@ import subprocess
 import pytest
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, Session
-from app.db.models.device import Device
+from app.db.models.user import User
 from starlette.testclient import TestClient
 from app.db.session import get_db
 import os
@@ -12,14 +12,14 @@ from app.main import app
 
 
 test_engine = create_engine(
-    "postgresql://postgres_test:postgres_test@localhost:5440/dsh_db_online_test",
+    "postgresql://postgres_test:postgres_test@localhost:5442/dsh_db_users_test",
     future=True,
 )
 
 test_session = sessionmaker(bind=test_engine, expire_on_commit=False)
 
 CLEAN_TABLES = [
-    "devices",
+    "users",
 ]
 
 
@@ -37,7 +37,7 @@ def run_migration():
 @pytest.fixture(scope="function")
 def db():
     engine = create_engine(
-        "postgresql://postgres_test:postgres_test@localhost:5440/dsh_db_online_test",
+        "postgresql://postgres_test:postgres_test@localhost:5442/dsh_db_users_test",
         future=True,
     )
     _Session = sessionmaker(bind=engine, expire_on_commit=False, class_=Session)
@@ -70,25 +70,23 @@ def client() -> Generator[TestClient, Any, None]:
 
 
 @pytest.fixture()
-def create_device_in_db():
+def create_user_in_db():
     def wrapper(
-        name,
-        type_device,
-        type_value,
-        range_value,
-        current_value,
+        user_id,
+        username,
+        email,
+        hashed_password,
         session: Session,
     ):
-        device = Device(
-            name=name,
-            type_device=type_device,
-            type_value=type_value,
-            range_value=range_value,
-            current_value=current_value,
+        user = User(
+            user_id=user_id,
+            username=username,
+            email=email,
+            hashed_password=hashed_password,
         )
 
         with session as db:
-            db.add(device)
+            db.add(user)
             db.commit()
             db.flush()
 
