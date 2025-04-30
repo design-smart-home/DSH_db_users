@@ -15,6 +15,12 @@ class UserRepository:
         if user:
             return user
 
+    def get_user_by_email(self, email: str) -> Type[User] | None:
+        user = self._db.query(User).filter(User.email == email).first()
+
+        if user:
+            return user
+
     def post_user(
         self,
         username: str,

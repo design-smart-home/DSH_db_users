@@ -16,6 +16,15 @@ def get_user_by_id(user_id: uuid.UUID, session: Session) -> Type[User] | None:
         return user
 
 
+def get_user_by_email_(email: str, session: Session) -> Type[User] | None:
+    user_repo = UserRepository(session)
+
+    user = user_repo.get_user_by_email(email=email)
+
+    if user:
+        return user
+
+
 def post_user_(data: PostUserRequest, session: Session) -> User | None:
     device_repo = UserRepository(session)
 

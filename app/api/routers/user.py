@@ -12,6 +12,7 @@ from app.api.core.user import (
     delete_user_by_id,
     get_user_by_id,
     post_user_,
+    get_user_by_email_
 )
 
 import uuid
@@ -36,6 +37,25 @@ def get_user(
         username=user.username,
         email=user.email,
         hashed_password=user.hashed_password,
+    )
+
+
+@user_router.get("/by_email/{email}")
+def get_user_by_email(
+        email: str, db: Session = Depends(get_db)
+) -> GetUserResponse:
+    user = get_user_by_email_(email, session=db)
+
+    if not user:
+        raise HTTPException(
+            status_code=404, detail=f"User with email {email} not found"
+        )
+
+    return GetUserResponse(
+        user_id=user.user_id,
+        username=user.username,
+        email=user.email,
+        hashed_password=user.hashed_password
     )
 
 
